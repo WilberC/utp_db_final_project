@@ -19,7 +19,7 @@ class Cliente(models.Model):
         db_table = 'clientes'
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
-        ordering = ['-fecha_registro']
+        ordering = ['id_cliente']
     
     def __str__(self):
         return f"{self.nombre} ({self.email})"
@@ -60,7 +60,7 @@ class Producto(models.Model):
         db_table = 'productos'
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
-        ordering = ['nombre']
+        ordering = ['id_producto']
     
     def __str__(self):
         return f"{self.nombre} - ${self.precio}"
@@ -109,7 +109,7 @@ class Pedido(models.Model):
         db_table = 'pedidos'
         verbose_name = "Pedido"
         verbose_name_plural = "Pedidos"
-        ordering = ['-fecha_pedido']
+        ordering = ['id_pedido']
     
     def __str__(self):
         return f"Pedido #{self.id_pedido} - {self.id_cliente.nombre}"

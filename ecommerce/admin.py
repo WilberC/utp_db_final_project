@@ -44,7 +44,7 @@ class ClienteAdmin(admin.ModelAdmin):
         'id_cliente', 'fecha_registro', 'total_pedidos', 'total_gastado',
         'comentarios_display', 'preferencias_display'
     ]
-    ordering = ['-fecha_registro']
+    ordering = ['id_cliente']
     actions = ['sincronizar_mongodb', 'exportar_datos_completos', 'limpiar_comentarios']
     
     fieldsets = (
@@ -268,7 +268,7 @@ class PedidoAdmin(admin.ModelAdmin):
     list_filter = ['estado', 'fecha_pedido', 'metodo_pago']
     search_fields = ['id_cliente__nombre', 'id_cliente__email']
     readonly_fields = ['id_pedido', 'fecha_pedido', 'total']
-    ordering = ['-fecha_pedido']
+    ordering = ['id_pedido']
     inlines = [DetallePedidoInline]
     actions = ['marcar_entregado', 'marcar_enviado', 'exportar_pedido_completo']
     
@@ -335,7 +335,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_filter = ['activo', 'fecha_creacion']
     search_fields = ['nombre', 'descripcion']
     readonly_fields = ['id_producto', 'fecha_creacion']
-    ordering = ['nombre']
+    ordering = ['id_producto']
     actions = ['activar_productos', 'desactivar_productos', 'ajustar_stock']
     
     fieldsets = (
@@ -386,7 +386,7 @@ class DetallePedidoAdmin(admin.ModelAdmin):
     list_filter = ['id_pedido__fecha_pedido']
     search_fields = ['id_pedido__id_cliente__nombre', 'id_producto__nombre']
     readonly_fields = ['id_detalle', 'subtotal']
-    ordering = ['-id_pedido__fecha_pedido']
+    ordering = ['id_detalle']
     
     fieldsets = (
         ('Información del Pedido', {

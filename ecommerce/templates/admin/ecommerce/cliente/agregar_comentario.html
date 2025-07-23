@@ -61,10 +61,10 @@
 </div>
 {% endblock %}
 
+{% block title %}Agregar Comentario - {{ cliente.nombre }}{% endblock %}
+
 {% block content %}
 <div id="content-main">
-    <h1>Agregar Comentario - {{ cliente.nombre }}</h1>
-    
     <form method="post">
         {% csrf_token %}
         
