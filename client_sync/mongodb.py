@@ -40,11 +40,14 @@ class MongoDBConnection:
             
         except Exception as e:
             logger.error(f"Failed to connect to MongoDB: {e}")
+            # Set db to None to indicate connection failure
+            self.db = None
+            self.client = None
             raise
     
     def get_collection(self, collection_name):
         """Get a MongoDB collection"""
-        if not self.db:
+        if self.db is None:
             self._connect()
         return self.db[collection_name]
     
