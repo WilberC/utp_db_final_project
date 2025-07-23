@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: client_sync_postgres
+    environment:
+      POSTGRES_DB: client_sync_db
+      POSTGRES_USER: client_sync_user
+      POSTGRES_PASSWORD: client_sync_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - client_sync_network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7
+    container_name: client_sync_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: client_sync_user
+      MONGO_INITDB_ROOT_PASSWORD: client_sync_password
+      MONGO_INITDB_DATABASE: client_sync_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - client_sync_network
+    restart: unless-stopped
+
+  # Optional: MongoDB admin interface
+  mongo-express:
+    image: mongo-express:latest
+    container_name: client_sync_mongo_express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: client_sync_user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: client_sync_password
+      ME_CONFIG_MONGODB_URL: mongodb://client_sync_user:client_sync_password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - client_sync_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  mongodb_data:
+
+networks:
+  client_sync_network:
+    driver: bridge 

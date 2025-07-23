@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)&4iq0y1xvmk#-tc1&7o11+#tlhl^*s2hsmrh_o=v*4vkn#%*0'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-)&4iq0y1xvmk#-tc1&7o11+#tlhl^*s2hsmrh_o=v*4vkn#%*0')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -74,8 +76,20 @@ WSGI_APPLICATION = 'client_sync.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DB', default='client_sync_db'),
+        'USER': config('POSTGRES_USER', default='client_sync_user'),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='client_sync_password'),
+        'HOST': config('POSTGRES_HOST', default='localhost'),
+        'PORT': config('POSTGRES_PORT', default='5432'),
+    },
+    'mongodb': {
+        'ENGINE': 'djongo',
+        'NAME': config('MONGO_DB', default='client_sync_mongo'),
+        'ENFORCE_SCHEMA': True,
+        'CLIENT': {
+            'host': f"mongodb://{config('MONGO_USER', default='client_sync_user')}:{config('MONGO_PASSWORD', default='client_sync_password')}@{config('MONGO_HOST', default='localhost')}:{config('MONGO_PORT', default='27017')}/",
+        }
     }
 }
 
