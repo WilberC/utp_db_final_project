@@ -1,0 +1,114 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+<style>
+    .form-row {
+        margin-bottom: 20px;
+    }
+    .form-row label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .form-row select,
+    .form-row input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .form-row input[type="checkbox"] {
+        margin-right: 8px;
+    }
+    .submit-row {
+        margin-top: 20px;
+        padding: 15px 0;
+        border-top: 1px solid #eee;
+    }
+    .submit-row input[type="submit"] {
+        background: #007cba;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .submit-row input[type="submit"]:hover {
+        background: #005a87;
+    }
+    .cancel-link {
+        margin-left: 10px;
+        color: #666;
+        text-decoration: none;
+    }
+    .cancel-link:hover {
+        color: #333;
+    }
+    .checkbox-row {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url 'admin:ecommerce_cliente_changelist' %}">Clientes</a>
+    &rsaquo; <a href="{% url 'admin:ecommerce_cliente_change' cliente.id_cliente %}">{{ cliente.nombre }}</a>
+    &rsaquo; Actualizar Preferencias
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Actualizar Preferencias - {{ cliente.nombre }}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <label for="idioma">Idioma:</label>
+            <select name="idioma" id="idioma">
+                <option value="ES" {% if preferencias.idioma == "ES" %}selected{% endif %}>Español</option>
+                <option value="EN" {% if preferencias.idioma == "EN" %}selected{% endif %}>English</option>
+                <option value="FR" {% if preferencias.idioma == "FR" %}selected{% endif %}>Français</option>
+                <option value="DE" {% if preferencias.idioma == "DE" %}selected{% endif %}>Deutsch</option>
+            </select>
+        </div>
+        
+        <div class="form-row">
+            <label for="metodo_pago">Método de Pago Preferido:</label>
+            <select name="metodo_pago" id="metodo_pago">
+                <option value="Tarjeta de crédito" {% if preferencias.metodo_pago == "Tarjeta de crédito" %}selected{% endif %}>Tarjeta de crédito</option>
+                <option value="Tarjeta de débito" {% if preferencias.metodo_pago == "Tarjeta de débito" %}selected{% endif %}>Tarjeta de débito</option>
+                <option value="PayPal" {% if preferencias.metodo_pago == "PayPal" %}selected{% endif %}>PayPal</option>
+                <option value="Transferencia bancaria" {% if preferencias.metodo_pago == "Transferencia bancaria" %}selected{% endif %}>Transferencia bancaria</option>
+                <option value="Efectivo" {% if preferencias.metodo_pago == "Efectivo" %}selected{% endif %}>Efectivo</option>
+            </select>
+        </div>
+        
+        <div class="form-row">
+            <label>Notificaciones:</label>
+            <div class="checkbox-row">
+                <input type="checkbox" name="notificaciones" id="notificaciones" {% if preferencias.notificaciones %}checked{% endif %}>
+                <label for="notificaciones" style="font-weight: normal;">Recibir notificaciones por email</label>
+            </div>
+        </div>
+        
+        <div class="submit-row">
+            <input type="submit" value="Actualizar Preferencias" class="default">
+            <a href="{% url 'admin:ecommerce_cliente_change' cliente.id_cliente %}" class="cancel-link">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

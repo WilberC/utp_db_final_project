@@ -13,6 +13,7 @@ class Cliente(models.Model):
     email = models.EmailField(unique=True, verbose_name="Correo electrónico")
     telefono = models.CharField(max_length=20, verbose_name="Teléfono")
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de registro")
+    activo = models.BooleanField(default=True, verbose_name="Cliente activo")
     
     class Meta:
         db_table = 'clientes'
@@ -49,11 +50,12 @@ class Producto(models.Model):
         validators=[MinValueValidator(Decimal('0.01'))],
         verbose_name="Precio"
     )
+    # ======================
     descripcion = models.TextField(blank=True, verbose_name="Descripción")
     stock = models.PositiveIntegerField(default=0, verbose_name="Stock disponible")
     activo = models.BooleanField(default=True, verbose_name="Producto activo")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    
+    # ======================
     class Meta:
         db_table = 'productos'
         verbose_name = "Producto"
@@ -92,6 +94,7 @@ class Pedido(models.Model):
         default=Decimal('0.00'),
         verbose_name="Total del pedido"
     )
+    # ======================
     estado = models.CharField(
         max_length=20,
         choices=ESTADOS_PEDIDO,
@@ -100,6 +103,7 @@ class Pedido(models.Model):
     )
     direccion_envio = models.TextField(verbose_name="Dirección de envío")
     metodo_pago = models.CharField(max_length=50, verbose_name="Método de pago")
+    # ======================
     
     class Meta:
         db_table = 'pedidos'
@@ -141,16 +145,18 @@ class DetallePedido(models.Model):
         validators=[MinValueValidator(1)],
         verbose_name="Cantidad"
     )
-    precio_unitario = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2,
-        verbose_name="Precio unitario"
-    )
     subtotal = models.DecimalField(
         max_digits=10, 
         decimal_places=2,
         verbose_name="Subtotal"
     )
+    # ======================
+    precio_unitario = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        verbose_name="Precio unitario"
+    )
+    # ======================
     
     class Meta:
         db_table = 'detalle_pedido'

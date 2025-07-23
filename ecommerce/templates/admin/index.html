@@ -1,0 +1,217 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #007cba;
+        margin: 0;
+    }
+    
+    .stat-description {
+        color: #666;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    
+    .dashboard-sections {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 30px;
+    }
+    
+    .dashboard-section {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .dashboard-section h2 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 18px;
+        border-bottom: 2px solid #007cba;
+        padding-bottom: 10px;
+    }
+    
+    .list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .list-item:last-child {
+        border-bottom: none;
+    }
+    
+    .list-item-name {
+        font-weight: 500;
+    }
+    
+    .list-item-value {
+        color: #007cba;
+        font-weight: bold;
+    }
+    
+    .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    
+    .status-active {
+        background: #28a745;
+    }
+    
+    .status-inactive {
+        background: #dc3545;
+    }
+    
+    .quick-actions {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    .quick-actions h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .action-button {
+        background: #007cba;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    
+    .action-button:hover {
+        background: #005a87;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .action-button.secondary {
+        background: #6c757d;
+    }
+    
+    .action-button.secondary:hover {
+        background: #545b62;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Total Clientes</h3>
+        <p class="stat-value">{{ total_clientes }}</p>
+        <p class="stat-description">Clientes registrados en el sistema</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Total Productos</h3>
+        <p class="stat-value">{{ total_productos }}</p>
+        <p class="stat-description">Productos disponibles</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Total Pedidos</h3>
+        <p class="stat-value">{{ total_pedidos }}</p>
+        <p class="stat-description">Pedidos realizados</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Pedidos Hoy</h3>
+        <p class="stat-value">{{ pedidos_hoy }}</p>
+        <p class="stat-description">Pedidos del día de hoy</p>
+    </div>
+</div>
+
+<div class="dashboard-sections">
+    <div class="dashboard-section">
+        <h2>🏆 Productos Más Vendidos</h2>
+        {% if productos_mas_vendidos %}
+            {% for producto in productos_mas_vendidos %}
+            <div class="list-item">
+                <span class="list-item-name">{{ producto.id_producto__nombre }}</span>
+                <span class="list-item-value">{{ producto.total_vendido }} unidades</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #666; font-style: italic;">No hay datos de ventas disponibles</p>
+        {% endif %}
+    </div>
+    
+    <div class="dashboard-section">
+        <h2>👥 Clientes Más Activos</h2>
+        {% if clientes_mas_activos %}
+            {% for cliente in clientes_mas_activos %}
+            <div class="list-item">
+                <span class="list-item-name">{{ cliente.nombre }}</span>
+                <span class="list-item-value">{{ cliente.num_pedidos }} pedidos</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #666; font-style: italic;">No hay clientes con pedidos</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="quick-actions">
+    <h3>⚡ Acciones Rápidas</h3>
+    <div class="action-buttons">
+        <a href="{% url 'admin:ecommerce_cliente_add' %}" class="action-button">➕ Nuevo Cliente</a>
+        <a href="{% url 'admin:ecommerce_producto_add' %}" class="action-button">📦 Nuevo Producto</a>
+        <a href="{% url 'admin:ecommerce_pedido_add' %}" class="action-button">🛒 Nuevo Pedido</a>
+        <a href="{% url 'admin:ecommerce_cliente_changelist' %}" class="action-button secondary">👥 Ver Clientes</a>
+        <a href="{% url 'admin:ecommerce_producto_changelist' %}" class="action-button secondary">📦 Ver Productos</a>
+        <a href="{% url 'admin:ecommerce_pedido_changelist' %}" class="action-button secondary">🛒 Ver Pedidos</a>
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %} 
