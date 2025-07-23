@@ -82,14 +82,6 @@ DATABASES = {
         'PASSWORD': config('POSTGRES_PASSWORD', default='client_sync_password'),
         'HOST': config('POSTGRES_HOST', default='localhost'),
         'PORT': config('POSTGRES_PORT', default='5432'),
-    },
-    'mongodb': {
-        'ENGINE': 'djongo',
-        'NAME': config('MONGO_DB', default='client_sync_mongo'),
-        'ENFORCE_SCHEMA': True,
-        'CLIENT': {
-            'host': f"mongodb://{config('MONGO_USER', default='client_sync_user')}:{config('MONGO_PASSWORD', default='client_sync_password')}@{config('MONGO_HOST', default='localhost')}:{config('MONGO_PORT', default='27017')}/",
-        }
     }
 }
 

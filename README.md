@@ -1,6 +1,6 @@
 # Client Sync Project
 
-A Django project configured to use both PostgreSQL and MongoDB databases.
+A Django project configured to use PostgreSQL as the primary database (Django ORM) and MongoDB for flexible document storage (direct pymongo access).
 
 ## Prerequisites
 
@@ -88,6 +88,30 @@ docker-compose down -v
 ## Project Structure
 
 - `client_sync/` - Django project settings
+- `client_sync/mongodb.py` - MongoDB connection utility
+- `client_sync/example_usage.py` - Examples of using both databases
 - `docker-compose.yml` - Database containers configuration
 - `requirements.txt` - Python dependencies
-- `config.env` - Environment variables template 
+- `config.env` - Environment variables template
+
+## Database Usage
+
+### PostgreSQL (Django ORM)
+- Used for Django models, authentication, sessions, etc.
+- Access via Django ORM: `User.objects.all()`
+
+### MongoDB (pymongo)
+- Used for flexible document storage
+- Access via pymongo: `get_mongodb_collection('collection_name')`
+
+### Example Usage
+```python
+# PostgreSQL (Django ORM)
+from django.contrib.auth.models import User
+user = User.objects.create_user(username='test', email='test@example.com')
+
+# MongoDB (pymongo)
+from client_sync.mongodb import get_mongodb_collection
+collection = get_mongodb_collection('users')
+collection.insert_one({'username': 'test', 'data': 'value'})
+``` 
